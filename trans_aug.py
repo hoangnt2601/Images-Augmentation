@@ -2,6 +2,19 @@ import cv2
 import numpy as np
 from random import randint
 
+def zoom(image):
+    IMAGE_WIDTH = 80
+    IMAGE_HEIGHT = 80
+    zoom_pix = randint(0, 10)
+    zoom_factor = 1 + (2*zoom_pix)/IMAGE_HEIGHT
+    image = cv2.resize(image, None, fx=zoom_factor,
+                       fy=zoom_factor, interpolation=cv2.INTER_LINEAR)
+    top_crop = (image.shape[0] - IMAGE_HEIGHT)//2
+    left_crop = (image.shape[1] - IMAGE_WIDTH)//2
+    image = image[top_crop: top_crop+IMAGE_HEIGHT,
+                  left_crop: left_crop+IMAGE_WIDTH]
+    return image
+
 def translation_image(image,x,y):
     rows, cols ,c= image.shape
     M = np.float32([[1, 0, x], [0, 1, y]])
@@ -15,7 +28,7 @@ def rotate_image(image, deg):
     return image
 def rotate_random_image(image):
     rows, cols,c = image.shape
-    M = cv2.getRotationMatrix2D((cols/2,rows/2), randint(-30, 30), 1)
+    M = cv2.getRotationMatrix2D((cols/2,rows/2), randint(-20, 20), 1)
     image = cv2.warpAffine(image, M, (cols, rows))
     return image
 
